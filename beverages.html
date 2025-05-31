@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium Beverages – Smart Foods</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600;700;800&family=Inter:wght@200;300;400;500;600;700&display=swap');
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --primary-gold: #C9A961;
+      --bright-gold: #E8D078;
+      --dark-gold: #A68B3B;
+      --rich-black: #0A0A0A;
+      --charcoal: #1C1C1E;
+      --soft-white: #FAFAFA;
+      --cream: #F8F6F0;
+      --text-dark: #1D1D1F;
+      --text-muted: #6D6D70;
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --shadow-card: 0 15px 35px rgba(0, 0, 0, 0.1);
+      --success-green: #34D399;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: 
+        radial-gradient(circle at 30% 20%, rgba(201, 169, 97, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 70% 80%, rgba(201, 169, 97, 0.1) 0%, transparent 40%),
+        linear-gradient(145deg, #000000 0%, #1C1C1E 50%, #0A0A0A 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      color: var(--soft-white);
+    }
+
+    header {
+      background: rgba(10, 10, 10, 0.85);
+      backdrop-filter: blur(30px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 20px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 25px;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--primary-gold);
+      text-decoration: none;
+      font-weight: 400;
+      letter-spacing: 2px;
+    }
+
+    .back-btn {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--soft-white);
+      padding: 8px 16px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      background: var(--primary-gold);
+      color: var(--rich-black);
+    }
+
+    .page-header {
+      text-align: center;
+      padding: 60px 25px 40px;
+    }
+
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      color: var(--soft-white);
+      margin-bottom: 15px;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .page-subtitle {
+      font-size: 1.1rem;
+      color: rgba(250, 250, 250, 0.7);
+      font-weight: 300;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      padding: 0 25px 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .product-card {
+      background: rgba(248, 246, 240, 0.98);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+      transition: all 0.4s ease;
+      border: 1px solid rgba(201, 169, 97, 0.08);
+    }
+
+    .product-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    }
+
+    .product-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-bottom: 1px solid rgba(201, 169, 97, 0.1);
+    }
+
+    .product-info {
+      padding: 25px;
+    }
+
+    .product-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .product-description {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 15px;
+      line-height: 1.4;
+    }
+
+    .product-price {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--dark-gold);
+      margin-bottom: 20px;
+    }
+
+    .cart-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .add-to-cart {
+      background: linear-gradient(135deg, var(--primary-gold), var(--bright-gold));
+      color: var(--rich-black);
+      border: none;
+      padding: 12px 24px;
+      border-radius: 25px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .add-to-cart:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(201, 169, 97, 0.4);
+    }
+
+    .quantity-controls {
+      display: none;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .quantity-controls.active {
+      display: flex;
+    }
+
+    .quantity-btn {
+      background: var(--primary-gold);
+      color: var(--rich-black);
+      border: none;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .quantity-btn:hover {
+      background: var(--bright-gold);
+      transform: scale(1.1);
+    }
+
+    .quantity-display {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      min-width: 30px;
+      text-align: center;
+    }
+
+    .premium-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: linear-gradient(135deg, var(--primary-gold), var(--bright-gold));
+      color: var(--rich-black);
+      font-size: 0.7rem;
+      padding: 5px 10px;
+      border-radius: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    @media (max-width: 768px) {
+      .products-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+        padding: 0 20px 60px;
+      }
+      
+      .page-title {
+        font-size: 2.5rem;
+      }
+      
+      .product-info {
+        padding: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .products-grid {
+        grid-template-columns: 1fr;
+        padding: 0 15px 50px;
+      }
+      
+      .page-header {
+        padding: 40px 15px 30px;
+      }
+      
+      .page-title {
+        font-size: 2.2rem;
+      }
+      
+      .header-content {
+        padding: 0 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <a href="index.html" class="logo">Smart Foods</a>
+      <a href="index.html" class="back-btn">← Back to Menu</a>
+    </div>
+  </header>
+
+  <section class="page-header">
+    <h1 class="page-title">Premium Beverages</h1>
+    <p class="page-subtitle">Hand-roasted coffee, premium teas & signature cocktails</p>
+  </section>
+
+  <div class="products-grid">
+    <div class="product-card">
+      <div style="position: relative;">
+        <img src="artisan.jpg" alt="Artisan Espresso" class="product-image">
+        <span class="premium-badge">Signature</span>
+      </div>
+      <div class="product-info">
+        <h3 class="product-name">Artisan Espresso</h3>
+        <p class="product-description">Single-origin beans from Ethiopian highlands, expertly roasted to perfection</p>
+        <div class="product-price">₹180</div>
+        <div class="cart-controls">
+          <button class="add-to-cart" onclick="addToCart(this, 'Artisan Espresso', 180)">Add to Cart</button>
+          <div class="quantity-controls">
+            <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+            <span class="quantity-display">1</span>
+            <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <img src="https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=400&h=200&fit=crop" alt="Golden Turmeric Latte" class="product-image">
+      <div class="product-info">
+        <h3 class="product-name">Golden Turmeric Latte</h3>
+        <p class="product-description">Warming blend of turmeric, ginger, and premium coconut milk</p>
+        <div class="product-price">₹220</div>
+        <div class="cart-controls">
+          <button class="add-to-cart" onclick="addToCart(this, 'Golden Turmeric Latte', 220)">Add to Cart</button>
+          <div class="quantity-controls">
+            <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+            <span class="quantity-display">1</span>
+            <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=200&fit=crop" alt="Earl Grey Supreme" class="product-image">
+      <div class="product-info">
+        <h3 class="product-name">Earl Grey Supreme</h3>
+        <p class="product-description">Premium Ceylon tea with bergamot oil and cornflower petals</p>
+        <div class="product-price">₹160</div>
+        <div class="cart-controls">
+          <button class="add-to-cart" onclick="addToCart(this, 'Earl Grey Supreme', 160)">Add to Cart</button>
+          <div class="quantity-controls">
+            <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+            <span class="quantity-display">1</span>
+            <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div style="position: relative;">
+        <img src="https://images.unsplash.com/photo-1546171753-97d7676e4602?w=400&h=200&fit=crop" alt="Signature Mojito" class="product-image">
+        <span class="premium-badge">Fresh</span>
+      </div>
+      <div class="product-info">
+        <h3 class="product-name">Signature Mojito</h3>
+        <p class="product-description">Fresh mint, lime, and premium white rum with house-made syrup</p>
+        <div class="product-price">₹350</div>
+        <div class="cart-controls">
+          <button class="add-to-cart" onclick="addToCart(this, 'Signature Mojito', 350)">Add to Cart</button>
+          <div class="quantity-controls">
+            <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+            <span class="quantity-display">1</span>
+            <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <img src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=400&h=200&fit=crop" alt="Cold Brew Nitro" class="product-image">
+      <div class="product-info">
+        <h3 class="product-name">Cold Brew Nitro</h3>
+        <p class="product-description">Smooth cold brew infused with nitrogen for creamy texture</p>
+        <div class="product-price">₹250</div>
+        <div class="cart-controls">
+          <button class="add-to-cart" onclick="addToCart(this, 'Cold Brew Nitro', 250)">Add to Cart</button>
+          <div class="quantity-controls">
+            <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+            <span class="quantity-display">1</span>
+            <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <img src="https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=400&h=200&fit=crop" alt="Lavender Honey Tea" class="product-image">
+      <div class="product-info">
+        <h3 class="product-name">Lavender Honey Tea</h3>
+        <p class="product-description">Delicate lavender buds with wildflower honey and chamomile</p>
+        <div class="product-price">₹190</div>
+        <div class="cart-controls">
+          <button class="add-to-cart" onclick="addToCart(this, 'Lavender Honey Tea', 190)">Add to Cart</button>
+          <div class="quantity-controls">
+            <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+            <span class="quantity-display">1</span>
+            <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let cart = {};
+
+    function addToCart(button, itemName, price) {
+      const productCard = button.closest('.product-card');
+      const addButton = productCard.querySelector('.add-to-cart');
+      const quantityControls = productCard.querySelector('.quantity-controls');
+      
+      // Hide add button and show quantity controls
+      addButton.style.display = 'none';
+      quantityControls.classList.add('active');
+      
+      // Initialize cart item
+      if (!cart[itemName]) {
+        cart[itemName] = {
+          quantity: 1,
+          price: price
+        };
+      }
+      
+      updateCartDisplay();
+    }
+
+    function increaseQuantity(button) {
+      const productCard = button.closest('.product-card');
+      const quantityDisplay = productCard.querySelector('.quantity-display');
+      const itemName = productCard.querySelector('.product-name').textContent;
+      
+      cart[itemName].quantity++;
+      quantityDisplay.textContent = cart[itemName].quantity;
+      updateCartDisplay();
+    }
+
+    function decreaseQuantity(button) {
+      const productCard = button.closest('.product-card');
+      const quantityDisplay = productCard.querySelector('.quantity-display');
+      const addButton = productCard.querySelector('.add-to-cart');
+      const quantityControls = productCard.querySelector('.quantity-controls');
+      const itemName = productCard.querySelector('.product-name').textContent;
+      
+      cart[itemName].quantity--;
+      
+      if (cart[itemName].quantity <= 0) {
+        // Remove from cart and show add button again
+        delete cart[itemName];
+        addButton.style.display = 'block';
+        quantityControls.classList.remove('active');
+      } else {
+        quantityDisplay.textContent = cart[itemName].quantity;
+      }
+      
+      updateCartDisplay();
+    }
+
+    function updateCartDisplay() {
+      // You can implement cart total display here
+      console.log('Cart updated:', cart);
+    }
+  </script>
+</body>
+</html>
