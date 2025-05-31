@@ -61,7 +61,7 @@
 
     .logo {
       font-family: 'Playfair Display', serif;
-      font-size: 1rem;
+      font-size: 2rem;
       color: var(--primary-gold);
       text-decoration: none;
       font-weight: 400;
@@ -84,6 +84,10 @@
       cursor: pointer;
       transition: all 0.3s ease;
       font-size: 1.2rem;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .cart-icon:hover {
@@ -341,16 +345,16 @@
     <div class="header-content">
       <a href="index.html" class="logo">Smart Foods</a>
       <div class="header-right">
-        <div class="cart-icon" onclick="toggleCart()">
+        <a href="cart.html" class="cart-icon">
           🛒
           <span class="cart-count" id="cartCount">0</span>
-        </div>
+        </a>
         <a href="index.html" class="back-btn">← Back to Menu</a>
       </div>
     </div>
   </header>
 
-  <div class="toast" id="toast">Item saved to cart!</div>
+  <div class="toast" id="toast">Item added to cart!</div>
 
   <section class="page-header">
     <h1 class="page-title">Premium Beverages</h1>
@@ -487,10 +491,12 @@
           price: price
         };
         cartItemCount++;
+      } else {
+        cart[itemName].quantity++;
       }
       
       updateCartDisplay();
-      showToast();
+      showToast('Item added to cart!');
     }
 
     function increaseQuantity(button) {
@@ -501,7 +507,7 @@
       cart[itemName].quantity++;
       quantityDisplay.textContent = cart[itemName].quantity;
       updateCartDisplay();
-      showToast();
+      showToast('Quantity increased!');
     }
 
     function decreaseQuantity(button) {
@@ -519,8 +525,11 @@
         cartItemCount--;
         addButton.style.display = 'block';
         quantityControls.classList.remove('active');
+        quantityDisplay.textContent = '1'; 
+        showToast('Item removed from cart!');
       } else {
         quantityDisplay.textContent = cart[itemName].quantity;
+        showToast('Quantity decreased!');
       }
       
       updateCartDisplay();
@@ -528,9 +537,16 @@
 
     function updateCartDisplay() {
       const cartCountElement = document.getElementById('cartCount');
-      cartCountElement.textContent = cartItemCount;
       
-      if (cartItemCount > 0) {
+      
+      let totalItems = 0;
+      Object.keys(cart).forEach(itemName => {
+        totalItems += cart[itemName].quantity;
+      });
+      
+      cartCountElement.textContent = totalItems;
+      
+      if (totalItems > 0) {
         cartCountElement.classList.add('active');
       } else {
         cartCountElement.classList.remove('active');
@@ -538,21 +554,17 @@
       
       
       localStorage.setItem('smartFoodsCart', JSON.stringify(cart));
-      localStorage.setItem('smartFoodsCartCount', cartItemCount.toString());
+      localStorage.setItem('smartFoodsCartCount', Object.keys(cart).length.toString());
     }
 
-    function showToast() {
+    function showToast(message) {
       const toast = document.getElementById('toast');
+      toast.textContent = message;
       toast.classList.add('show');
       
       setTimeout(() => {
         toast.classList.remove('show');
       }, 2000);
-    }
-
-    function toggleCart() {
-      
-      alert(`Cart has ${cartItemCount} items\n\n${JSON.stringify(cart, null, 2)}`);
     }
 
     
