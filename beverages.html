@@ -68,6 +68,50 @@
       letter-spacing: 2px;
     }
 
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .cart-icon {
+      position: relative;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--soft-white);
+      padding: 12px;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1.2rem;
+    }
+
+    .cart-icon:hover {
+      background: var(--primary-gold);
+      color: var(--rich-black);
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #ef4444;
+      color: white;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: none;
+    }
+
+    .cart-count.active {
+      display: flex;
+    }
+
     .back-btn {
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
@@ -82,6 +126,25 @@
     .back-btn:hover {
       background: var(--primary-gold);
       color: var(--rich-black);
+    }
+
+    .toast {
+      position: fixed;
+      top: 100px;
+      right: 25px;
+      background: var(--success-green);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 25px;
+      font-weight: 500;
+      z-index: 10000;
+      transform: translateX(400px);
+      transition: all 0.4s ease;
+      box-shadow: 0 8px 25px rgba(52, 211, 153, 0.3);
+    }
+
+    .toast.show {
+      transform: translateX(0);
     }
 
     .page-header {
@@ -277,9 +340,17 @@
   <header>
     <div class="header-content">
       <a href="index.html" class="logo">Smart Foods</a>
-      <a href="index.html" class="back-btn">← Back to Menu</a>
+      <div class="header-right">
+        <div class="cart-icon" onclick="toggleCart()">
+          🛒
+          <span class="cart-count" id="cartCount">0</span>
+        </div>
+        <a href="index.html" class="back-btn">← Back to Menu</a>
+      </div>
     </div>
   </header>
+
+  <div class="toast" id="toast">Item saved to cart!</div>
 
   <section class="page-header">
     <h1 class="page-title">Premium Beverages</h1>
@@ -398,25 +469,28 @@
 
   <script>
     let cart = {};
+    let cartItemCount = 0;
 
     function addToCart(button, itemName, price) {
       const productCard = button.closest('.product-card');
       const addButton = productCard.querySelector('.add-to-cart');
       const quantityControls = productCard.querySelector('.quantity-controls');
       
-      // Hide add button and show quantity controls
+      
       addButton.style.display = 'none';
       quantityControls.classList.add('active');
       
-      // Initialize cart item
+      
       if (!cart[itemName]) {
         cart[itemName] = {
           quantity: 1,
           price: price
         };
+        cartItemCount++;
       }
       
       updateCartDisplay();
+      showToast();
     }
 
     function increaseQuantity(button) {
@@ -427,6 +501,7 @@
       cart[itemName].quantity++;
       quantityDisplay.textContent = cart[itemName].quantity;
       updateCartDisplay();
+      showToast();
     }
 
     function decreaseQuantity(button) {
@@ -439,8 +514,9 @@
       cart[itemName].quantity--;
       
       if (cart[itemName].quantity <= 0) {
-        // Remove from cart and show add button again
+        
         delete cart[itemName];
+        cartItemCount--;
         addButton.style.display = 'block';
         quantityControls.classList.remove('active');
       } else {
@@ -451,9 +527,63 @@
     }
 
     function updateCartDisplay() {
-      // You can implement cart total display here
-      console.log('Cart updated:', cart);
+      const cartCountElement = document.getElementById('cartCount');
+      cartCountElement.textContent = cartItemCount;
+      
+      if (cartItemCount > 0) {
+        cartCountElement.classList.add('active');
+      } else {
+        cartCountElement.classList.remove('active');
+      }
+      
+      
+      localStorage.setItem('smartFoodsCart', JSON.stringify(cart));
+      localStorage.setItem('smartFoodsCartCount', cartItemCount.toString());
     }
+
+    function showToast() {
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2000);
+    }
+
+    function toggleCart() {
+      
+      alert(`Cart has ${cartItemCount} items\n\n${JSON.stringify(cart, null, 2)}`);
+    }
+
+    
+    window.addEventListener('DOMContentLoaded', function() {
+      const savedCart = localStorage.getItem('smartFoodsCart');
+      const savedCount = localStorage.getItem('smartFoodsCartCount');
+      
+      if (savedCart) {
+        cart = JSON.parse(savedCart);
+        cartItemCount = parseInt(savedCount) || 0;
+        
+        
+        Object.keys(cart).forEach(itemName => {
+          const productCards = document.querySelectorAll('.product-card');
+          productCards.forEach(card => {
+            const productName = card.querySelector('.product-name').textContent;
+            if (productName === itemName) {
+              const addButton = card.querySelector('.add-to-cart');
+              const quantityControls = card.querySelector('.quantity-controls');
+              const quantityDisplay = card.querySelector('.quantity-display');
+              
+              addButton.style.display = 'none';
+              quantityControls.classList.add('active');
+              quantityDisplay.textContent = cart[itemName].quantity;
+            }
+          });
+        });
+        
+        updateCartDisplay();
+      }
+    });
   </script>
 </body>
 </html>
