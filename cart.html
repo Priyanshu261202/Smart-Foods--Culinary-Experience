@@ -62,7 +62,7 @@
 
     .logo {
       font-family: 'Playfair Display', serif;
-      font-size: 1rem;
+      font-size: 2rem;
       color: var(--primary-gold);
       text-decoration: none;
       font-weight: 400;
@@ -289,6 +289,125 @@
       text-align: center;
     }
 
+    .table-selection {
+      margin-bottom: 25px;
+      padding: 20px;
+      background: rgba(201, 169, 97, 0.05);
+      border-radius: 15px;
+      border: 1px solid rgba(201, 169, 97, 0.1);
+    }
+
+    .table-selection h4 {
+      color: var(--text-dark);
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+
+    .table-selector {
+      position: relative;
+      margin-bottom: 15px;
+    }
+
+    .table-dropdown {
+      width: 100%;
+      padding: 15px 20px;
+      border: 2px solid rgba(201, 169, 97, 0.2);
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--text-dark);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C9A961' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 15px center;
+      background-size: 20px;
+    }
+
+    .table-dropdown:hover {
+      border-color: var(--primary-gold);
+      background: rgba(255, 255, 255, 1);
+    }
+
+    .table-dropdown:focus {
+      outline: none;
+      border-color: var(--primary-gold);
+      box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.1);
+    }
+
+    .custom-table-input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid rgba(201, 169, 97, 0.2);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--text-dark);
+      font-size: 1rem;
+      margin-top: 10px;
+    }
+
+    .payment-selection {
+      margin-bottom: 25px;
+      padding: 20px;
+      background: rgba(201, 169, 97, 0.05);
+      border-radius: 15px;
+      border: 1px solid rgba(201, 169, 97, 0.1);
+    }
+
+    .payment-selection h4 {
+      color: var(--text-dark);
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+
+    .payment-options {
+      display: flex;
+      gap: 15px;
+    }
+
+    .payment-option {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.7);
+      border: 2px solid rgba(201, 169, 97, 0.2);
+      border-radius: 15px;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    .payment-option:hover {
+      border-color: var(--primary-gold);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .payment-option.selected {
+      border-color: var(--primary-gold);
+      background: rgba(201, 169, 97, 0.1);
+    }
+
+    .payment-option .icon {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .payment-option .title {
+      font-weight: 600;
+      color: var(--text-dark);
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+
+    .payment-option .subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
     .summary-row {
       display: flex;
       justify-content: space-between;
@@ -321,37 +440,15 @@
       letter-spacing: 1px;
     }
 
-    .checkout-btn:hover {
+    .checkout-btn:hover:not(:disabled) {
       transform: translateY(-3px);
       box-shadow: 0 12px 30px rgba(201, 169, 97, 0.4);
     }
 
-    .payment-methods {
-      margin-top: 20px;
-      text-align: center;
-    }
-
-    .payment-methods h4 {
-      color: var(--text-dark);
-      font-size: 0.9rem;
-      margin-bottom: 10px;
-      font-weight: 500;
-    }
-
-    .payment-icons {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .payment-icon {
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      color: var(--text-dark);
+    .checkout-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
     }
 
     .toast {
@@ -393,6 +490,10 @@
       
       .cart-container {
         padding: 0 20px 60px;
+      }
+
+      .payment-options {
+        flex-direction: column;
       }
     }
 
@@ -439,7 +540,7 @@
 
   <section class="page-header">
     <h1 class="page-title">Your Cart</h1>
-    <p class="page-subtitle">Review your items and proceed to checkout</p>
+    <p class="page-subtitle">Review your items, select table, and proceed to checkout</p>
   </section>
 
   <div class="cart-container">
@@ -452,19 +553,44 @@
 
     <div class="cart-content" id="cartContent" style="display: none;">
       <div class="cart-items" id="cartItems">
-        
-
       </div>
 
       <div class="cart-summary">
         <h3 class="summary-title">Order Summary</h3>
+        
+        <div class="table-selection">
+          <h4>🪑 Select Table Number</h4>
+          <div class="table-selector">
+            <select class="table-dropdown" id="tableSelect" onchange="selectTable()">
+              <option value="">Choose your table...</option>
+            </select>
+          </div>
+          <input type="text" class="custom-table-input" id="customTableInput" placeholder="Or enter custom table/room number" style="display: none;">
+        </div>
+
+        <div class="payment-selection">
+          <h4>💳 Payment Method</h4>
+          <div class="payment-options">
+            <div class="payment-option" id="payNowOption" onclick="selectPaymentMethod('payNow')">
+              <span class="icon">📱</span>
+              <div class="title">Pay Now</div>
+              <div class="subtitle">UPI/Cards</div>
+            </div>
+            <div class="payment-option" id="payLaterOption" onclick="selectPaymentMethod('payLater')">
+              <span class="icon">🍽️</span>
+              <div class="title">Pay Later</div>
+              <div class="subtitle">After meal</div>
+            </div>
+          </div>
+        </div>
+
         <div class="summary-row">
           <span>Subtotal:</span>
           <span id="subtotal">₹0</span>
         </div>
         <div class="summary-row">
-          <span>Delivery Fee:</span>
-          <span id="deliveryFee">₹50</span>
+          <span>Service Charge (5%):</span>
+          <span id="serviceCharge">₹0</span>
         </div>
         <div class="summary-row">
           <span>Tax (5%):</span>
@@ -474,17 +600,9 @@
           <span>Total:</span>
           <span id="total">₹0</span>
         </div>
-        <button class="checkout-btn" onclick="proceedToCheckout()">
-          Proceed to Checkout
+        <button class="checkout-btn" id="checkoutBtn" onclick="proceedToCheckout()" disabled>
+          Select Table & Payment Method
         </button>
-        <div class="payment-methods">
-          <h4>We Accept</h4>
-          <div class="payment-icons">
-            <span class="payment-icon">💳 Cards</span>
-            <span class="payment-icon">📱 UPI</span>
-            <span class="payment-icon">💸 COD</span>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -492,6 +610,8 @@
   <script>
     let cart = {};
     let cartItemCount = 0;
+    let selectedTable = null;
+    let selectedPaymentMethod = null;
 
     function loadCart() {
       const savedCart = localStorage.getItem('smartFoodsCart');
@@ -503,6 +623,81 @@
       }
       
       displayCart();
+      populateTableSelect();
+    }
+
+    function populateTableSelect() {
+      const tableSelect = document.getElementById('tableSelect');
+      tableSelect.innerHTML = '<option value="">Choose your table...</option>';
+
+      
+      // tables 1-20
+      for (let i = 1; i <= 20; i++) {
+        const option = document.createElement('option');
+        option.value = `T ${i}`;
+        option.textContent = `T ${i}`;
+        tableSelect.appendChild(option);
+      }
+      
+      
+      const customOption = document.createElement('option');
+      customOption.value = 'custom';
+      customOption.textContent = 'Custom Table/Room';
+      tableSelect.appendChild(customOption);
+    }
+
+    function selectTable() {
+      const tableSelect = document.getElementById('tableSelect');
+      const customInput = document.getElementById('customTableInput');
+      
+      if (tableSelect.value === 'custom') {
+        customInput.style.display = 'block';
+        customInput.focus();
+        selectedTable = null;
+        
+        customInput.onchange = function() {
+          if (this.value.trim()) {
+            selectedTable = this.value.trim();
+            updateCheckoutButton();
+          }
+        };
+      } else if (tableSelect.value) {
+        customInput.style.display = 'none';
+        selectedTable = tableSelect.value;
+        updateCheckoutButton();
+      } else {
+        customInput.style.display = 'none';
+        selectedTable = null;
+        updateCheckoutButton();
+      }
+    }
+
+    function selectPaymentMethod(method) {
+      
+      document.querySelectorAll('.payment-option').forEach(option => {
+        option.classList.remove('selected');
+      });
+      
+      
+      document.getElementById(method + 'Option').classList.add('selected');
+      selectedPaymentMethod = method;
+      
+      updateCheckoutButton();
+    }
+
+    function updateCheckoutButton() {
+      const checkoutBtn = document.getElementById('checkoutBtn');
+      
+      if (selectedTable && selectedPaymentMethod) {
+        checkoutBtn.disabled = false;
+        checkoutBtn.textContent = selectedPaymentMethod === 'payNow' ? 'Pay Now & Place Order' : 'Place Order (Pay Later)';
+      } else {
+        checkoutBtn.disabled = true;
+        let missing = [];
+        if (!selectedTable) missing.push('T');
+        if (!selectedPaymentMethod) missing.push('Payment Method');
+        checkoutBtn.textContent = `Select ${missing.join(' & ')}`;
+      }
     }
 
     function displayCart() {
@@ -579,14 +774,9 @@
     }
 
     function updateCart() {
-      // Recalculate cart item count
       cartItemCount = Object.keys(cart).length;
-      
-      // Save to localStorage
       localStorage.setItem('smartFoodsCart', JSON.stringify(cart));
       localStorage.setItem('smartFoodsCartCount', cartItemCount.toString());
-      
-      // Refresh display
       displayCart();
     }
 
@@ -598,12 +788,12 @@
         subtotal += item.price * item.quantity;
       });
       
-      const deliveryFee = subtotal > 0 ? 50 : 0;
+      const serviceCharge = Math.round(subtotal * 0.05);
       const tax = Math.round(subtotal * 0.05);
-      const total = subtotal + deliveryFee + tax;
+      const total = subtotal + serviceCharge + tax;
       
       document.getElementById('subtotal').textContent = `₹${subtotal}`;
-      document.getElementById('deliveryFee').textContent = `₹${deliveryFee}`;
+      document.getElementById('serviceCharge').textContent = `₹${serviceCharge}`;
       document.getElementById('tax').textContent = `₹${tax}`;
       document.getElementById('total').textContent = `₹${total}`;
     }
@@ -625,40 +815,73 @@
         return;
       }
       
-      // Simulate payment gateway integration
-      const total = document.getElementById('total').textContent;
-      const confirmPayment = confirm(`Proceed to payment gateway?\nTotal Amount: ${total}\n\nThis will redirect you to the payment page.`);
+      if (!selectedTable || !selectedPaymentMethod) {
+        showToast('Please select table and payment method!', 'error');
+        return;
+      }
       
-      if (confirmPayment) {
+      
+      const order = {
+  id: 'ORD-' + Date.now(),
+  items: { ...cart },
+  tableNumber: selectedTable,
+  paymentMethod: selectedPaymentMethod,
+  total: document.getElementById('total').textContent,
+  timestamp: new Date().toISOString(),
+  status: 'pending',
+  customerName: prompt('Please enter customer name:', 'Customer ' + selectedTable) || 'Customer ' + selectedTable
+};
+      
+      if (selectedPaymentMethod === 'payNow') {
         
-        simulatePayment();
+        processPayment(order);
+      } else {
+        
+        placeOrder(order);
       }
     }
 
-    function simulatePayment() {
-      
-      const checkoutBtn = document.querySelector('.checkout-btn');
+    function processPayment(order) {
+      const checkoutBtn = document.getElementById('checkoutBtn');
       const originalText = checkoutBtn.textContent;
       checkoutBtn.textContent = 'Processing Payment...';
       checkoutBtn.disabled = true;
       
-      
+      // Simulate payment processing
       setTimeout(() => {
-       
-        cart = {};
-        cartItemCount = 0;
-        localStorage.removeItem('smartFoodsCart');
-        localStorage.removeItem('smartFoodsCartCount');
-        
-        
-        alert('🎉 Payment Successful!\n\nThank you for your order!\nYour food will be delivered within 30-45 minutes.\n\nOrder confirmation has been sent to your email.');
-        
-        // Redirect to menu
-        window.location.href = 'index.html';
+        const paymentSuccess = Math.random() > 0.1; 
+        if (paymentSuccess) {
+          order.paymentStatus = 'paid';
+          placeOrder(order);
+        } else {
+          checkoutBtn.textContent = originalText;
+          checkoutBtn.disabled = false;
+          showToast('Payment failed! Please try again.', 'error');
+        }
       }, 2000);
     }
 
-    // Load cart when page loads
+    function placeOrder(order) {
+      
+      let kitchenOrders = JSON.parse(localStorage.getItem('kitchenOrders') || '[]');
+      kitchenOrders.push(order);
+      localStorage.setItem('kitchenOrders', JSON.stringify(kitchenOrders));
+      
+      
+      cart = {};
+      cartItemCount = 0;
+      localStorage.removeItem('smartFoodsCart');
+      localStorage.removeItem('smartFoodsCartCount');
+      
+      
+      const paymentText = order.paymentMethod === 'payNow' ? 'Payment successful!' : 'Order placed!';
+      alert(`🎉 ${paymentText}\n\nOrder ID: ${order.id}\nTable: ${order.tableNumber}\nTotal: ${order.total}\n\nYour order has been sent to the kitchen!\n${order.paymentMethod === 'payLater' ? 'Please pay after your meal.' : ''}`);
+      
+      
+      window.location.href = 'index.html';
+    }
+
+    
     window.addEventListener('DOMContentLoaded', loadCart);
   </script>
 </body>

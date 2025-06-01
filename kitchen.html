@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kitchen  – Smart Foods</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600;700;800&family=Inter:wght@200;300;400;500;600;700&display=swap');
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --primary-gold: #C9A961;
+      --bright-gold: #E8D078;
+      --dark-gold: #A68B3B;
+      --rich-black: #0A0A0A;
+      --charcoal: #1C1C1E;
+      --soft-white: #FAFAFA;
+      --cream: #F8F6F0;
+      --text-dark: #1D1D1F;
+      --text-muted: #6D6D70;
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --shadow-card: 0 15px 35px rgba(0, 0, 0, 0.1);
+      --success-green: #00740c;
+      --warning-orange: #F59E0B;
+      --danger-red: #EF4444;
+      --info-blue: #3B82F6;
+      --pending-purple: #8B5CF6;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: 
+        radial-gradient(circle at 30% 20%, rgba(201, 169, 97, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 70% 80%, rgba(201, 169, 97, 0.1) 0%, transparent 40%),
+        linear-gradient(145deg, #000000 0%, #1C1C1E 50%, #0A0A0A 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      color: var(--soft-white);
+    }
+
+    header {
+      background: rgba(10, 10, 10, 0.85);
+      backdrop-filter: blur(30px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 20px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 25px;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--primary-gold);
+      text-decoration: none;
+      font-weight: 400;
+      letter-spacing: 2px;
+    }
+
+    .kitchen-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--soft-white);
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .stats-bar {
+      display: flex;
+      gap: 25px;
+      align-items: center;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+
+    .stat-number {
+      background: var(--primary-gold);
+      color: var(--rich-black);
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-weight: 700;
+      min-width: 24px;
+      text-align: center;
+    }
+
+    .page-header {
+      padding: 40px 25px 20px;
+      text-align: center;
+    }
+
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      color: var(--soft-white);
+      margin-bottom: 10px;
+    }
+
+    .page-subtitle {
+      color: rgba(250, 250, 250, 0.7);
+      font-size: 1.1rem;
+      font-weight: 300;
+    }
+
+    .filter-bar {
+      max-width: 1400px;
+      margin: 0 auto 30px;
+      padding: 0 25px;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .filter-btn {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--soft-white);
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-btn:hover {
+      background: var(--primary-gold);
+      color: var(--rich-black);
+    }
+
+    .filter-btn.active {
+      background: var(--primary-gold);
+      color: var(--rich-black);
+    }
+
+    .orders-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 25px 80px;
+    }
+
+    .orders-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 25px;
+    }
+
+    .order-card {
+      background: rgba(248, 246, 240, 0.98);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: var(--shadow-card);
+      border: 1px solid rgba(201, 169, 97, 0.08);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .order-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .status-indicator {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+    }
+
+    .status-indicator.pending {
+      background: var(--pending-purple);
+    }
+
+    .status-indicator.preparing {
+      background: var(--warning-orange);
+    }
+
+    .status-indicator.ready {
+      background: var(--info-blue);
+    }
+
+    .status-indicator.delivered {
+      background: var(--success-green);
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .order-info h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--text-dark);
+      margin-bottom: 5px;
+    }
+
+    .order-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .order-time {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-badge.pending {
+      background: rgba(139, 92, 246, 0.1);
+      color: var(--pending-purple);
+      border: 1px solid rgba(139, 92, 246, 0.2);
+    }
+
+    .status-badge.preparing {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning-orange);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .status-badge.ready {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--info-blue);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+
+    .status-badge.delivered {
+      background: rgba(52, 211, 153, 0.1);
+      color: var(--success-green);
+      border: 1px solid rgba(52, 211, 153, 0.2);
+    }
+
+    .order-items {
+      margin-bottom: 20px;
+    }
+
+    .order-items h4 {
+      color: var(--text-dark);
+      font-size: 1rem;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .item-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: rgba(201, 169, 97, 0.05);
+      border-radius: 8px;
+      border-left: 3px solid var(--primary-gold);
+    }
+
+    .item-name {
+      font-weight: 500;
+      color: var(--text-dark);
+    }
+
+    .item-quantity {
+      background: var(--primary-gold);
+      color: var(--rich-black);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .order-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 15px;
+      border-top: 1px solid rgba(201, 169, 97, 0.2);
+    }
+
+    .order-total {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--dark-gold);
+    }
+
+    .payment-status {
+      font-size: 0.8rem;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    .payment-status.paid {
+      background: rgba(52, 211, 153, 0.1);
+      color: var(--success-green);
+    }
+
+    .payment-status.pending {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning-orange);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 25px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-preparing {
+      background: var(--warning-orange);
+      color: white;
+    }
+
+    .btn-ready {
+      background: var(--info-blue);
+      color: white;
+    }
+
+    .btn-delivered {
+      background: var(--success-green);
+      color: white;
+    }
+
+    .btn-cancel {
+      background: var(--danger-red);
+      color: white;
+    }
+
+    .btn-delete {
+      background: rgba(239, 68, 68, 0.8);
+      color: white;
+      font-size: 0.8rem;
+      padding: 8px 16px;
+      flex: 0 0 auto;
+      min-width: 80px;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .action-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .delete-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: var(--danger-red);
+      padding: 6px 8px;
+      border-radius: 50%;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.7;
+    }
+
+    .delete-btn:hover {
+      background: var(--danger-red);
+      color: white;
+      opacity: 1;
+      transform: scale(1.1);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    .empty-state h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      color: var(--soft-white);
+    }
+
+    .timer {
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .timer.urgent {
+      color: var(--danger-red);
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .notification-dot {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      width: 12px;
+      height: 12px;
+      background: var(--danger-red);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .refresh-btn {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--soft-white);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .refresh-btn:hover {
+      background: var(--primary-gold);
+      color: var(--rich-black);
+    }
+
+    .sound-toggle {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--soft-white);
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .sound-toggle.active {
+      background: var(--success-green);
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      .orders-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .filter-bar {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 10px;
+      }
+      
+      .stats-bar {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-end;
+      }
+      
+      .header-content {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .page-title {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .order-header {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+      
+      .order-footer {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+      }
+      
+      .orders-container {
+        padding: 0 15px 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <div class="kitchen-title">
+        <span>👨‍🍳</span>
+        <a href="index.html" class="logo">Smart Foods Kitchen</a>
+      </div>
+      <div class="stats-bar">
+        <div class="stat-item">
+          <span>🕐 Pending:</span>
+          <span class="stat-number" id="pendingCount">0</span>
+        </div>
+        <div class="stat-item">
+          <span>🍳 Preparing:</span>
+          <span class="stat-number" id="preparingCount">0</span>
+        </div>
+        <div class="stat-item">
+          <span>✅ Ready:</span>
+          <span class="stat-number" id="readyCount">0</span>
+        </div>
+        <button class="sound-toggle" id="soundToggle" title="Toggle Sound Notifications">🔊</button>
+        <button class="refresh-btn" onclick="refreshOrders()">🔄 Refresh</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="page-header">
+    <h1 class="page-title">Kitchen </h1>
+    <p class="page-subtitle">Manage all incoming orders and track preparation status</p>
+  </section>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterOrders('all')">
+      📋 All Orders
+    </button>
+    <button class="filter-btn" onclick="filterOrders('pending')">
+      🕐 Pending
+    </button>
+    <button class="filter-btn" onclick="filterOrders('preparing')">
+      🍳 Preparing
+    </button>
+    <button class="filter-btn" onclick="filterOrders('ready')">
+      ✅ Ready
+    </button>
+    <button class="filter-btn" onclick="filterOrders('delivered')">
+      🚚 Delivered
+    </button>
+  </div>
+
+  <div class="orders-container">
+    <div class="orders-grid" id="ordersGrid">
+      
+        
+
+    </div>
+    
+    <div class="empty-state" id="emptyState" style="display: none;">
+      <div class="empty-state-icon">🍽️</div>
+      <h3>No orders to display</h3>
+      <p>Orders will appear here as customers place them</p>
+    </div>
+  </div>
+
+  <script>
+    let orders = [];
+    let currentFilter = 'all';
+    let soundEnabled = true;
+    let lastOrderCount = 0;
+
+    function loadOrders() {
+      const savedOrders = localStorage.getItem('kitchenOrders');
+      if (savedOrders) {
+        orders = JSON.parse(savedOrders);
+      }
+      
+      if (soundEnabled && orders.length > lastOrderCount) {
+        playNotificationSound();
+      }
+      lastOrderCount = orders.length;
+      
+      displayOrders();
+      updateStats();
+    }
+
+    function displayOrders() {
+      const ordersGrid = document.getElementById('ordersGrid');
+      const emptyState = document.getElementById('emptyState');
+      
+      
+      let filteredOrders = orders;
+      if (currentFilter !== 'all') {
+        filteredOrders = orders.filter(order => order.status === currentFilter);
+      }
+      
+      
+      filteredOrders.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      
+      if (filteredOrders.length === 0) {
+        ordersGrid.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+      }
+      
+      ordersGrid.style.display = 'grid';
+      emptyState.style.display = 'none';
+      ordersGrid.innerHTML = '';
+      
+      filteredOrders.forEach(order => {
+        const orderCard = createOrderCard(order);
+        ordersGrid.appendChild(orderCard);
+      });
+    }
+
+    function createOrderCard(order) {
+      const orderDiv = document.createElement('div');
+      orderDiv.className = 'order-card';
+      
+      const timeElapsed = getTimeElapsed(order.timestamp);
+      const isUrgent = timeElapsed > 20; 
+      
+      const itemsHtml = Object.keys(order.items).map(itemName => {
+        const item = order.items[itemName];
+        return `
+          <div class="item">
+            <span class="item-name">${itemName}</span>
+            <span class="item-quantity">×${item.quantity}</span>
+          </div>
+        `;
+      }).join('');
+      
+      const paymentStatusText = order.paymentMethod === 'payNow' ? 'Paid' : 'Pay Later';
+      const paymentStatusClass = order.paymentMethod === 'payNow' ? 'paid' : 'pending';
+      
+      
+      const customerInfo = order.customerName ? `${order.customerName} - Table ${order.tableNumber}` : `Table ${order.tableNumber}`;
+      
+      orderDiv.innerHTML = `
+        <div class="status-indicator ${order.status}"></div>
+        <button class="delete-btn" onclick="deleteOrderPermanently('${order.id}')" title="Delete Order Permanently">
+          🗑️
+        </button>
+        <div class="order-header">
+          <div class="order-info">
+            <h3>${customerInfo}</h3>
+            <div class="order-meta">
+              <div class="order-time">
+                <span>🕒</span>
+                <span class="timer ${isUrgent ? 'urgent' : ''}">${timeElapsed} min ago</span>
+              </div>
+              <div>📱 Order ID: ${order.id}</div>
+            </div>
+          </div>
+          <div class="status-badge ${order.status}">
+            ${order.status}
+            ${order.status === 'pending' && isUrgent ? '<span class="notification-dot"></span>' : ''}
+          </div>
+        </div>
+        
+        <div class="order-items">
+          <h4>🍽️ Items:</h4>
+          <div class="item-list">
+            ${itemsHtml}
+          </div>
+        </div>
+        
+        <div class="order-footer">
+          <div class="order-total">Total: ${order.total}</div>
+          <div class="payment-status ${paymentStatusClass}">
+            ${paymentStatusText}
+          </div>
+        </div>
+        
+        <div class="action-buttons">
+          ${getActionButtons(order)}
+        </div>
+      `;
+      
+      return orderDiv;
+    }
+
+    function getActionButtons(order) {
+      switch (order.status) {
+        case 'pending':
+          return `
+            <button class="action-btn btn-preparing" onclick="updateOrderStatus('${order.id}', 'preparing')">
+              Start Preparing
+            </button>
+            <button class="action-btn btn-cancel" onclick="cancelOrder('${order.id}')">
+              Cancel Order
+            </button>
+          `;
+        case 'preparing':
+          return `
+            <button class="action-btn btn-ready" onclick="updateOrderStatus('${order.id}', 'ready')">
+              Mark as Ready
+            </button>
+          `;
+        case 'ready':
+          return `
+            <button class="action-btn btn-delivered" onclick="updateOrderStatus('${order.id}', 'delivered')">
+              Mark as Delivered
+            </button>
+          `;
+        case 'delivered':
+          return `
+            <button class="action-btn" disabled>
+              Order Completed
+            </button>
+          `;
+        default:
+          return '';
+      }
+    }
+
+    function updateOrderStatus(orderId, newStatus) {
+      const orderIndex = orders.findIndex(order => order.id === orderId);
+      if (orderIndex !== -1) {
+        orders[orderIndex].status = newStatus;
+        orders[orderIndex].lastUpdated = new Date().toISOString();
+        
+        
+        localStorage.setItem('kitchenOrders', JSON.stringify(orders));
+        
+        
+        displayOrders();
+        updateStats();
+        
+        
+        showNotification(`Order ${orderId} marked as ${newStatus}`);
+      }
+    }
+
+    function cancelOrder(orderId) {
+      if (confirm('Are you sure you want to cancel this order?')) {
+        const orderIndex = orders.findIndex(order => order.id === orderId);
+        if (orderIndex !== -1) {
+          orders.splice(orderIndex, 1);
+          localStorage.setItem('kitchenOrders', JSON.stringify(orders));
+          displayOrders();
+          updateStats();
+          showNotification('Order cancelled successfully');
+        }
+      }
+    }
+
+    function deleteOrderPermanently(orderId) {
+      if (confirm('⚠️ Are you sure you want to permanently delete this order?\n\nThis action cannot be undone and will remove the order from all records.')) {
+        const orderIndex = orders.findIndex(order => order.id === orderId);
+        if (orderIndex !== -1) {
+          const orderInfo = orders[orderIndex];
+          orders.splice(orderIndex, 1);
+          localStorage.setItem('kitchenOrders', JSON.stringify(orders));
+          displayOrders();
+          updateStats();
+          showNotification(`Order ${orderId} permanently deleted`);
+        }
+      }
+    }
+
+    function filterOrders(filter) {
+      currentFilter = filter;
+      
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      displayOrders();
+    }
+
+    function updateStats() {
+      const stats = {
+        pending: orders.filter(o => o.status === 'pending').length,
+        preparing: orders.filter(o => o.status === 'preparing').length,
+        ready: orders.filter(o => o.status === 'ready').length,
+        delivered: orders.filter(o => o.status === 'delivered').length
+      };
+      
+      document.getElementById('pendingCount').textContent = stats.pending;
+      document.getElementById('preparingCount').textContent = stats.preparing;
+      document.getElementById('readyCount').textContent = stats.ready;
+    }
+
+    function getTimeElapsed(timestamp) {
+      const now = new Date();
+      const orderTime = new Date(timestamp);
+      const diffInMinutes = Math.floor((now - orderTime) / (1000 * 60));
+      return diffInMinutes;
+    }
+
+    function refreshOrders() {
+      loadOrders();
+      showNotification('Orders refreshed');
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const soundToggle = document.getElementById('soundToggle');
+      soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
+      soundToggle.classList.toggle('active', soundEnabled);
+      
+      localStorage.setItem('kitchenSoundEnabled', soundEnabled.toString());
+      showNotification(soundEnabled ? 'Sound notifications enabled' : 'Sound notifications disabled');
+    }
+
+    function playNotificationSound() {
+      if (typeof AudioContext !== 'undefined' || typeof webkitAudioContext !== 'undefined') {
+        const audioContext = new (AudioContext || webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.value = 800;
+        oscillator.type = 'sine';
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.5);
+      }
+    }
+
+    function showNotification(message) {
+      const toast = document.createElement('div');
+      toast.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 25px;
+        background: var(--success-green);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 25px;
+        font-weight: 500;
+        z-index: 10000;
+        transform: translateX(400px);
+        transition: all 0.4s ease;
+        box-shadow: 0 8px 25px rgba(52, 211, 153, 0.3);
+      `;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.transform = 'translateX(0)';
+      }, 100);
+      
+      setTimeout(() => {
+        toast.style.transform = 'translateX(400px)';
+        setTimeout(() => {
+          document.body.removeChild(toast);
+        }, 400);
+      }, 2000);
+    }
+
+    function init() {
+      const savedSoundEnabled = localStorage.getItem('kitchenSoundEnabled');
+      if (savedSoundEnabled !== null) {
+        soundEnabled = savedSoundEnabled === 'true';
+      }
+      
+      const soundToggle = document.getElementById('soundToggle');
+      soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
+      soundToggle.classList.toggle('active', soundEnabled);
+      soundToggle.onclick = toggleSound;
+      
+      
+      loadOrders();
+      
+     
+      setInterval(loadOrders, 30000);
+           
+      
+      setInterval(() => {
+        displayOrders();
+      }, 60000);
+    }
+
+    
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
