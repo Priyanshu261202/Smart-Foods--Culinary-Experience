@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard – Smart Foods</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --primary-gold: #C9A961;
+      --bright-gold: #E8D078;
+      --dark-gold: #A68B3B;
+      --rich-black: #0A0A0A;
+      --charcoal: #1C1C1E;
+      --soft-white: #FAFAFA;
+      --cream: #F8F6F0;
+      --text-dark: #1D1D1F;
+      --text-muted: #6D6D70;
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --shadow-glass: 0 10px 20px rgba(0, 0, 0, 0.15);
+      --success-green: #1f9b00;
+      --warning-orange: #F59E0B;
+      --error-red: #EF4444;
+      --info-blue: #3B82F6;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: 
+        radial-gradient(circle at 30% 20%, rgba(201, 169, 97, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 70% 80%, rgba(201, 169, 97, 0.1) 0%, transparent 40%),
+        linear-gradient(145deg, #000000 0%, #1C1C1E 50%, #0A0A0A 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      color: var(--soft-white);
+      overflow-x: hidden;
+    }
+
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 250px;
+      background: rgba(10, 10, 10, 0.85);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid var(--glass-border);
+      padding: 20px;
+      position: fixed;
+      height: 100%;
+      z-index: 1000;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--primary-gold);
+      margin-bottom: 40px;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+
+    .nav-item {
+      display: block;
+      color: var(--soft-white);
+      padding: 12px 15px;
+      margin: 5px 0;
+      border-radius: 10px;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      background: var(--glass-bg);
+      color: var(--primary-gold);
+    }
+
+    .main-content {
+      margin-left: 250px;
+      padding: 30px;
+      width: calc(100% - 250px);
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .dashboard-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      color: var(--soft-white);
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .refresh-btn {
+      background: linear-gradient(135deg, var(--primary-gold), var(--bright-gold));
+      color: var(--rich-black);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .refresh-btn:hover {
+      background: var(--bright-gold);
+      transform: translateY(-2px);
+    }
+
+    .refresh-btn.spin {
+      animation: spin 1s linear;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--soft-white);
+      margin-bottom: 20px;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .filter-tab {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--soft-white);
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .filter-tab.active,
+    .filter-tab:hover {
+      background: var(--primary-gold);
+      color: var(--rich-black);
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      border-radius: 15px;
+      overflow: hidden;
+    }
+
+    .table th,
+    .table td {
+      padding: 15px;
+      text-align: left;
+      font-size: 0.9rem;
+      color: var(--soft-white);
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .table th {
+      background: rgba(255, 255, 255, 0.05);
+      font-weight: 600;
+    }
+
+    .status-badge {
+      padding: 5px 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+
+    .status-empty { background: var(--info-blue); }
+    .status-pending { background: var(--warning-orange); }
+    .status-preparing { background: var(--success-green); }
+    .status-ready { background: var(--primary-gold); }
+    .status-delivered { background: #6B7280; }
+
+    .action-btn {
+      background: var(--primary-gold);
+      color: var(--rich-black);
+      border: none;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-right: 5px;
+      transition: all 0.3s ease;
+    }
+
+    .action-btn:hover {
+      background: var(--bright-gold);
+      transform: translateY(-1px);
+    }
+
+    .action-btn.cancel {
+      background: var(--error-red);
+      color: var(--soft-white);
+    }
+
+    .action-btn.cancel:hover {
+      background: #DC2626;
+    }
+
+    .table-status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 15px;
+    }
+
+    .table-card {
+      background: var(--cream);
+      border-radius: 15px;
+      padding: 15px;
+      text-align: center;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(201, 169, 97, 0.08);
+      box-shadow: var(--shadow-glass);
+    }
+
+    .table-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .table-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+    }
+
+    .table-select {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--soft-white);
+      padding: 8px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .toast {
+      position: fixed;
+      top: 100px;
+      right: 25px;
+      background: var(--success-green);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 25px;
+      font-weight: 500;
+      z-index: 10000;
+      transform: translateX(400px);
+      transition: all 0.4s ease;
+      box-shadow: var(--shadow-glass);
+    }
+
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: var(--cream);
+      border-radius: 15px;
+      padding: 20px;
+      max-width: 500px;
+      width: 90%;
+      color: var(--text-dark);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: var(--text-dark);
+    }
+
+    .modal-body {
+      margin-bottom: 15px;
+    }
+
+    .modal-body p {
+      margin: 5px 0;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 1024px) {
+      .sidebar {
+        width: 200px;
+      }
+      .main-content {
+        margin-left: 200px;
+        width: calc(100% - 200px);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+        padding: 15px;
+      }
+      .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 15px;
+      }
+      .dashboard-title {
+        font-size: 2.5rem;
+      }
+      .table th, .table td {
+        font-size: 0.85rem;
+        padding: 10px;
+      }
+      .table-status-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav class="sidebar">
+      <div class="logo">Smart Foods</div>
+      <a href="#" class="nav-item active" onclick="showSection('orders')">👨‍🍳 Kitchen Orders</a>
+      <a href="#" class="nav-item" onclick="showSection('feedback')">⭐ Customer Feedback</a>
+      <a href="#" class="nav-item" onclick="showSection('tables')">🪑 Table Status</a>
+      <a href="index.html" class="nav-item">← Back to Home</a>
+    </nav>
+
+    <main class="main-content">
+      <div class="dashboard-header">
+        <h1 class="dashboard-title">Admin Dashboard</h1>
+        <button class="refresh-btn" onclick="refreshData()">🔄 Refresh</button>
+      </div>
+
+      <div class="toast" id="toast">Action completed!</div>
+
+      <section id="orders" class="section">
+        <h2 class="section-title">Kitchen Orders</h2>
+        <div class="filter-tabs">
+          <span class="filter-tab active" onclick="filterOrders('all')">📋 All</span>
+          <span class="filter-tab" onclick="filterOrders('pending')">🕐 Pending</span>
+          <span class="filter-tab" onclick="filterOrders('preparing')">🍳 Preparing</span>
+          <span class="filter-tab" onclick="filterOrders('ready')">✅ Ready</span>
+          <span class="filter-tab" onclick="filterOrders('delivered')">🚚 Delivered</span>
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Table</th>
+              <th>Items</th>
+              <th>Status</th>
+              <th>Time</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="orders-table">
+            
+          </tbody>
+        </table>
+      </section>
+
+      <section id="feedback" class="section" style="display: none;">
+        <h2 class="section-title">Customer Feedback</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Rating</th>
+              <th>Comment</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="feedback-table">
+            
+          </tbody>
+        </table>
+      </section>
+
+      <section id="tables" class="section" style="display: none;">
+        <h2 class="section-title">Table Status</h2>
+        <div class="table-status-grid" id="tables-grid">
+          
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal" id="orderModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Order Details</h3>
+        <button class="close-btn" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Sample data 
+    const orders = [
+      { id: 'ORD001', table: 1, items: [
+        { name: 'Saffron Rasmalai Cake', quantity: 2, price: 420 },
+        { name: 'Rose Kulfi Parfait', quantity: 1, price: 380 }
+      ], status: 'pending', time: '2025-06-24 14:30' },
+      { id: 'ORD002', table: 3, items: [
+        { name: 'Monsoon Masala Chaat', quantity: 1, price: 390 }
+      ], status: 'preparing', time: '2025-06-24 14:25' },
+      { id: 'ORD003', table: 5, items: [
+        { name: 'Fig Tandoori Chicken', quantity: 1, price: 780 },
+        { name: 'Smoked Tandoori Salmon', quantity: 1, price: 820 }
+      ], status: 'ready', time: '2025-06-24 14:20' },
+    ];
+
+    const feedback = [
+      { 
+        name: 'Amit Sharma', 
+        email: '[email protected]', 
+        ratings: { food: 5, service: 4, ambience: 5, value: 4, overall: 5 }, 
+        comments: { enjoy: 'Loved the Saffron Rasmalai Cake!', improve: 'Faster service', additional: '' }, 
+        recommend: 'Definitely Yes', 
+        date: '2025-06-24', 
+        status: 'pending' 
+      },
+      { 
+        name: 'Priya Singh', 
+        email: '[email protected]', 
+        ratings: { food: 4, service: 3, ambience: 4, value: 4, overall: 4 }, 
+        comments: { enjoy: 'Great flavors', improve: 'Slightly slow service', additional: 'Nice ambience' }, 
+        recommend: 'Probably Yes', 
+        date: '2025-06-23', 
+        status: 'approved' 
+      },
+    ];
+
+    const tables = Array.from({ length: 12 }, (_, i) => ({
+      number: i + 1,
+      status: ['empty', 'pending', 'preparing', 'ready', 'delivered'][Math.floor(Math.random() * 5)]
+    }));
+
+    
+    orders.forEach(order => {
+      const table = tables.find(t => t.number === order.table);
+      if (table) table.status = order.status;
+    });
+
+    let currentFilter = 'all';
+
+    function showSection(sectionId) {
+      document.querySelectorAll('.section').forEach(section => section.style.display = 'none');
+      document.getElementById(sectionId).style.display = 'block';
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+      document.querySelector(`.nav-item[onclick="showSection('${sectionId}')"]`).classList.add('active');
+    }
+
+    function filterOrders(status) {
+      currentFilter = status;
+      document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+      document.querySelector(`.filter-tab[onclick="filterOrders('${status}')"]`).classList.add('active');
+      renderOrders();
+    }
+
+    function renderOrders() {
+      const tbody = document.getElementById('orders-table');
+      tbody.innerHTML = '';
+      const filteredOrders = currentFilter === 'all' ? orders : orders.filter(o => o.status === currentFilter);
+      if (filteredOrders.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 30px;">
+              <div style="font-size: 1.2rem; color: var(--text-muted);">🍽️ No orders to display</div>
+              <div style="font-size: 0.9rem; color: var(--text-muted);">Orders will appear here as customers place them</div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      filteredOrders.forEach(order => {
+        const itemList = order.items.map(item => `${item.name} (x${item.quantity})`).join(', ');
+        tbody.innerHTML += `
+          <tr>
+            <td><a href="#" onclick="showOrderDetails('${order.id}')">${order.id}</a></td>
+            <td>${order.table}</td>
+            <td>${itemList}</td>
+            <td><span class="status-badge status-${order.status}">${order.status}</span></td>
+            <td>${order.time}</td>
+            <td>
+              <button class="action-btn" onclick="updateOrderStatus('${order.id}', 'pending')">Pending</button>
+              <button class="action-btn" onclick="updateOrderStatus('${order.id}', 'preparing')">Preparing</button>
+              <button class="action-btn" onclick="updateOrderStatus('${order.id}', 'ready')">Ready</button>
+              <button class="action-btn" onclick="updateOrderStatus('${order.id}', 'delivered')">Delivered</button>
+              <button class="action-btn cancel" onclick="cancelOrder('${order.id}')">Cancel</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function renderFeedback() {
+      const tbody = document.getElementById('feedback-table');
+      tbody.innerHTML = '';
+      if (feedback.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 30px;">
+              <div style="font-size: 1.2rem; color: var(--text-muted);">⭐ No feedback to display</div>
+              <div style="font-size: 0.9rem; color: var(--text-muted);">Feedback will appear here as customers submit it</div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      feedback.forEach(item => {
+        const commentSummary = item.comments.enjoy || item.comments.improve || item.comments.additional || 'No comments';
+        tbody.innerHTML += `
+          <tr>
+            <td>${item.name}</td>
+            <td>${item.ratings.overall}/5</td>
+            <td>${commentSummary}</td>
+            <td>${item.date}</td>
+            <td><span class="status-badge status-${item.status}">${item.status}</span></td>
+            <td>
+              <button class="action-btn" onclick="updateFeedbackStatus('${item.name}', 'approved')">Approve</button>
+              <button class="action-btn cancel" onclick="updateFeedbackStatus('${item.name}', 'rejected')">Reject</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function renderTables() {
+      const grid = document.getElementById('tables-grid');
+      grid.innerHTML = '';
+      tables.forEach(table => {
+        grid.innerHTML += `
+          <div class="table-card">
+            <div class="table-number">Table ${table.number}</div>
+            <select class="table-select" onchange="reassignTable(${table.number}, this.value)">
+              <option value="${table.status}" selected>${table.status}</option>
+              <option value="empty">Empty</option>
+              <option value="pending">Pending</option>
+              <option value="preparing">Preparing</option>
+              <option value="ready">Ready</option>
+              <option value="delivered">Delivered</option>
+            </select>
+          </div>
+        `;
+      });
+    }
+
+    function showOrderDetails(orderId) {
+      const order = orders.find(o => o.id === orderId);
+      if (!order) return;
+      const modal = document.getElementById('orderModal');
+      const modalBody = document.getElementById('modalBody');
+      modalBody.innerHTML = `
+        <p><strong>Order ID:</strong> ${order.id}</p>
+        <p><strong>Table:</strong> ${order.table}</p>
+        <p><strong>Items:</strong></p>
+        <ul>
+          ${order.items.map(item => `<li>${item.name} (x${item.quantity}) - ₹${item.price}</li>`).join('')}
+        </ul>
+        <p><strong>Total:</strong> ₹${order.items.reduce((sum, item) => sum + item.price * item.quantity, 0)}</p>
+        <p><strong>Status:</strong> ${order.status}</p>
+        <p><strong>Time:</strong> ${order.time}</p>
+      `;
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('orderModal').style.display = 'none';
+    }
+
+    function updateOrderStatus(orderId, status) {
+      const order = orders.find(o => o.id === orderId);
+      if (order) {
+        order.status = status;
+        const table = tables.find(t => t.number === order.table);
+        if (table) table.status = status === 'delivered' ? 'empty' : status;
+        renderOrders();
+        renderTables();
+        showToast(`Order ${orderId} updated to ${status}!`);
+        // TODO: fetch('/api/orders/update', { method: 'POST', body: JSON.stringify({ orderId, status }) })
+      }
+    }
+
+    function cancelOrder(orderId) {
+      const index = orders.findIndex(o => o.id === orderId);
+      if (index !== -1) {
+        const table = tables.find(t => t.number === orders[index].table);
+        if (table) table.status = 'empty';
+        orders.splice(index, 1);
+        renderOrders();
+        renderTables();
+        showToast(`Order ${orderId} cancelled!`);
+        // TODO: fetch('/api/orders/cancel', { method: 'POST', body: JSON.stringify({ orderId }) })
+      }
+    }
+
+    function updateFeedbackStatus(name, status) {
+      const item = feedback.find(f => f.name === name);
+      if (item) {
+        item.status = status;
+        renderFeedback();
+        showToast(`Feedback from ${name} ${status}!`);
+        // TODO: fetch('/api/feedback/update', { method: 'POST', body: JSON.stringify({ name, status }) })
+      }
+    }
+
+    function reassignTable(tableNumber, status) {
+      const table = tables.find(t => t.number === tableNumber);
+      if (table) {
+        table.status = status;
+        const order = orders.find(o => o.table === tableNumber);
+        if (order && status !== 'empty') order.status = status;
+        if (status === 'empty' && order) cancelOrder(order.id);
+        renderTables();
+        renderOrders();
+        showToast(`Table ${tableNumber} updated to ${status}!`);
+        // TODO: fetch('/api/tables/update', { method: 'POST', body: JSON.stringify({ tableNumber, status }) })
+      }
+    }
+
+    function refreshData() {
+      const btn = document.querySelector('.refresh-btn');
+      btn.classList.add('spin');
+      setTimeout(() => btn.classList.remove('spin'), 1000);
+      // Simulate fetching cart data from localStorage
+      const savedCart = JSON.parse(localStorage.getItem('smartFoodsCart') || '{}');
+      Object.keys(savedCart).forEach((itemName, index) => {
+        if (!orders.find(o => o.id === `ORD${100 + index}`)) {
+          orders.push({
+            id: `ORD${100 + index}`,
+            table: Math.floor(Math.random() * 12) + 1,
+            items: [{ name: itemName, quantity: savedCart[itemName].quantity, price: savedCart[itemName].price }],
+            status: 'pending',
+            time: new Date().toISOString().slice(0, 16).replace('T', ' ')
+          });
+        }
+      });
+      orders.forEach(order => {
+        const table = tables.find(t => t.number === order.table);
+        if (table) table.status = order.status;
+      });
+      renderOrders();
+      renderFeedback();
+      renderTables();
+      showToast('Data refreshed!');
+      // TODO: fetch('/api/orders'), fetch('/api/feedback'), fetch('/api/tables')
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    // Initialize
+    window.addEventListener('DOMContentLoaded', () => {
+      renderOrders();
+      renderFeedback();
+      renderTables();
+      // Simulate real-time updates every 10s
+      setInterval(refreshData, 100000);
+    });
+  </script>
+</body>
+</html>

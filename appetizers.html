@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gourmet Appetizers – Smart Foods</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600;700;800&family=Inter:wght@200;300;400;500;600;700&display=swap');
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --primary-gold: #C9A961;
+      --bright-gold: #E8D078;
+      --dark-gold: #A68B3B;
+      --rich-black: #0A0A0A;
+      --charcoal: #1C1C1E;
+      --soft-white: #FAFAFA;
+      --cream: #F8F6F0;
+      --text-dark: #1D1D1F;
+      --text-muted: #6D6D70;
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --shadow-card: 0 15px 35px rgba(0, 0, 0, 0.1);
+      --success-green: #1f9b00;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: 
+        radial-gradient(circle at 30% 20%, rgba(201, 169, 97, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 70% 80%, rgba(201, 169, 97, 0.1) 0%, transparent 40%),
+        linear-gradient(145deg, #000000 0%, #1C1C1E 50%, #0A0A0A 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      color: var(--soft-white);
+    }
+
+    header {
+      background: rgba(10, 10, 10, 0.85);
+      backdrop-filter: blur(30px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 20px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 25px;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--primary-gold);
+      color: var(--dark-gold);
+      text-decoration: none;
+      font-weight: 400;
+      letter-spacing: 2px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .cart-icon {
+      position: relative;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--soft-white);
+      padding: 12px;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1.2rem;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cart-icon:hover {
+      background: var(--primary-gold);
+      color: var(--rich-black);
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #ef4444;
+      color: white;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: none;
+    }
+
+    .cart-count.active {
+      display: flex;
+    }
+
+    .back-btn {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--soft-white);
+      padding: 8px 16px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      background: var(--primary-gold);
+      color: var(--rich-black);
+    }
+
+    .toast {
+      position: fixed;
+      top: 100px;
+      right: 25px;
+      background: var(--success-green);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 25px;
+      font-weight: 500;
+      z-index: 10000;
+      transform: translateX(400px);
+      transition: all 0.4s ease;
+      box-shadow: 0 8px 25px rgba(52, 211, 153, 0.3);
+    }
+
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    .page-header {
+      text-align: center;
+      padding: 60px 25px 40px;
+    }
+
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      color: var(--soft-white);
+      margin-bottom: 15px;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .page-subtitle {
+      font-size: 1.1rem;
+      color: rgba(250, 250, 250, 0.7);
+      font-weight: 300;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      padding: 0 25px 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .product-card {
+      background: rgba(248, 246, 240, 0.98);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+      transition: all 0.4s ease;
+      border: 1px solid rgba(201, 169, 97, 0.08);
+    }
+
+    .product-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    }
+
+    .product-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-bottom: 1px solid rgba(201, 169, 97, 0.1);
+    }
+
+    .product-info {
+      padding: 25px;
+    }
+
+    .product-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .product-description {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 15px;
+      line-height: 1.4;
+    }
+
+    .product-price {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--dark-gold);
+      margin-bottom: 20px;
+    }
+
+    .cart-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .add-to-cart {
+      background: linear-gradient(135deg, var(--primary-gold), var(--bright-gold));
+      color: var(--rich-black);
+      border: none;
+      padding: 12px 24px;
+      border-radius: 25px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .add-to-cart:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(201, 169, 97, 0.4);
+    }
+
+    .quantity-controls {
+      display: none;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .quantity-controls.active {
+      display: flex;
+    }
+
+    .quantity-btn {
+      background: var(--primary-gold);
+      color: var(--rich-black);
+      border: none;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .quantity-btn:hover {
+      background: var(--bright-gold);
+      transform: scale(1.1);
+    }
+
+    .quantity-display {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      min-width: 30px;
+      text-align: center;
+    }
+
+    .premium-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: linear-gradient(135deg, var(--primary-gold), var(--bright-gold));
+      color: var(--rich-black);
+      font-size: 0.7rem;
+      padding: 5px 10px;
+      border-radius: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    @media (max-width: 768px) {
+      .products-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+        padding: 0 20px 60px;
+      }
+      
+      .page-title {
+        font-size: 2.5rem;
+      }
+      
+      .product-info {
+        padding: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .products-grid {
+        grid-template-columns: 1fr;
+        padding: 0 15px 50px;
+      }
+      
+      .page-header {
+        padding: 40px 15px 30px;
+      }
+      
+      .page-title {
+        font-size: 2.2rem;
+      }
+      
+      .header-content {
+        padding: 0 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <a href="index.html" class="logo">Smart Foods</a>
+      <div class="header-right">
+        <a href="cart.html" class="cart-icon">
+          🛒
+          <span class="cart-count" id="cartCount">0</span>
+        </a>
+        <a href="index.html" class="back-btn">← Back to Menu</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="toast" id="toast">Item added to cart!</div>
+
+  <section class="page-header">
+    <h1 class="page-title">Gourmet Appetizers</h1>
+    <p class="page-subtitle">Elevated small plates & sophisticated appetizers</p>
+  </section>
+
+  <div class="products-grid">
+    <div class="product-card">
+      <div style="position: relative;">
+        <img src="truffle_paneer.jpg" alt="Truffle Paneer Tikka" class="product-image">
+        <span class="premium-badge">Signature</span>
+      </div>
+      <div class="product-info">
+        <h3 class="product-name">Truffle Paneer Tikka</h3>
+        <p class="product-description">Marinated paneer infused with truffle oil, grilled to perfection</p>
+        <div class="product-price">₹480</div>
+        <div class="cart-controls">
+          <button class="add-to-cart" onclick="addToCart(this, 'Truffle Paneer Tikka', 480)">Add to Cart</button>
+          <div class="quantity-controls">
+            <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+            <span class="quantity-display">1</span>
+            <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div style="position: relative;">
+        <img src="https://images.unsplash.com/photo-1606851180852-9253b873d6e6?w=400&h=200&fit=crop" alt="Saffron Prawn Poppers" class="product-image">
+        <span class="premium-badge">Signature</span>
+      </div>
+      <div class="product-info">
+        <h3 class="product-name">Saffron Prawn Poppers</h3>
+        <p class="product-description">Juicy prawns coated in saffron-spiced batter, served with mint aioli</p>
+        <div class="product-price">₹620</div>
+        <div class="cart-controls">
+          <button class="add-to-cart" onclick="addToCart(this, 'Saffron Prawn Poppers', 620)">Add to Cart</button>
+          <div class="quantity-controls">
+            <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+            <span class="quantity-display">1</span>
+            <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div style="position: relative;">
+        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=200&fit=crop" alt="Amuse-Bouche Trio" class="product-image">
+        <span class="premium-badge">Signature</span>
+      </div>
+      <div class="product-info">
+        <h3 class="product-name">Amuse-Bouche Trio</h3>
+        <p class="product-description">Mini galouti kebab, beetroot tikki, and smoked mushroom tart</p>
+        <div class="product-price">₹550</div>
+        <div class="cart-controls">
+          <button class="add-to-cart" onclick="addToCart(this, 'Amuse-Bouche Trio', 550)">Add to Cart</button>
+          <div class="quantity-controls">
+            <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+            <span class="quantity-display">1</span>
+            <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div style="position: relative;">
+        <img src="https://images.unsplash.com/photo-1606913895932-69b7d0284751?w=400&h=200&fit=crop" alt="Avocado Papdi Chaat" class="product-image">
+        <span class="premium-badge">Fresh</span>
+      </div>
+      <div class="product-info">
+        <h3 class="product-name">Avocado Papdi Chaat</h3>
+        <p class="product-description">Crispy papdi topped with avocado, tamarind chutney, and sev</p>
+        <div class="product-price">₹390</div>
+        <div class="cart-controls">
+          <button class="add-to-cart" onclick="addToCart(this, 'Avocado Papdi Chaat', 390)">Add to Cart</button>
+          <div class="quantity-controls">
+            <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+            <span class="quantity-display">1</span>
+            <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div style="position: relative;">
+        <img src="https://images.unsplash.com/photo-1596793500983-3f3c481e3424?w=400&h=200&fit=crop" alt="Fig & Goat Cheese Naan" class="product-image">
+        <span class="premium-badge">Fresh</span>
+      </div>
+      <div class="product-info">
+        <h3 class="product-name">Fig & Goat Cheese Naan</h3>
+        <p class="product-description">Soft naan topped with caramelized figs and creamy goat cheese</p>
+        <div class="product-price">₹460</div>
+        <div class="cart-controls">
+          <button class="add-to-cart" onclick="addToCart(this, 'Fig & Goat Cheese Naan', 460)">Add to Cart</button>
+          <div class="quantity-controls">
+            <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+            <span class="quantity-display">1</span>
+            <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div style="position: relative;">
+        <img src="https://images.unsplash.com/photo-1603894584374-7e65c4f33672?w=400&h=200&fit=crop" alt="Spiced Lotus Root Chips" class="product-image">
+        <span class="premium-badge">Fresh</span>
+      </div>
+      <div class="product-info">
+        <h3 class="product-name">Spiced Lotus Root Chips</h3>
+        <p class="product-description">Crispy lotus root slices dusted with chaat masala and served with yogurt dip</p>
+        <div class="product-price">₹350</div>
+        <div class="cart-controls">
+          <button class="add-to-cart" onclick="addToCart(this, 'Spiced Lotus Root Chips', 350)">Add to Cart</button>
+          <div class="quantity-controls">
+            <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+            <span class="quantity-display">1</span>
+            <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let cart = {};
+    let cartItemCount = 0;
+
+    function addToCart(button, itemName, price) {
+      const productCard = button.closest('.product-card');
+      const addButton = productCard.querySelector('.add-to-cart');
+      const quantityControls = productCard.querySelector('.quantity-controls');
+      
+      addButton.style.display = 'none';
+      quantityControls.classList.add('active');
+      
+      if (!cart[itemName]) {
+        cart[itemName] = {
+          quantity: 1,
+          price: price
+        };
+        cartItemCount++;
+      } else {
+        cart[itemName].quantity++;
+      }
+      
+      updateCartDisplay();
+      showToast('Item added to cart!');
+    }
+
+    function increaseQuantity(button) {
+      const productCard = button.closest('.product-card');
+      const quantityDisplay = productCard.querySelector('.quantity-display');
+      const itemName = productCard.querySelector('.product-name').textContent;
+      
+      cart[itemName].quantity++;
+      quantityDisplay.textContent = cart[itemName].quantity;
+      updateCartDisplay();
+      showToast('Quantity increased!');
+    }
+
+    function decreaseQuantity(button) {
+      const productCard = button.closest('.product-card');
+      const quantityDisplay = productCard.querySelector('.quantity-display');
+      const addButton = productCard.querySelector('.add-to-cart');
+      const quantityControls = productCard.querySelector('.quantity-controls');
+      const itemName = productCard.querySelector('.product-name').textContent;
+      
+      cart[itemName].quantity--;
+      
+      if (cart[itemName].quantity <= 0) {
+        delete cart[itemName];
+        cartItemCount--;
+        addButton.style.display = 'block';
+        quantityControls.classList.remove('active');
+        quantityDisplay.textContent = '1'; 
+        showToast('Item removed from cart!');
+      } else {
+        quantityDisplay.textContent = cart[itemName].quantity;
+        showToast('Quantity decreased!');
+      }
+      
+      updateCartDisplay();
+    }
+
+    function updateCartDisplay() {
+      const cartCountElement = document.getElementById('cartCount');
+      
+      let totalItems = 0;
+      Object.keys(cart).forEach(itemName => {
+        totalItems += cart[itemName].quantity;
+      });
+      
+      cartCountElement.textContent = totalItems;
+      
+      if (totalItems > 0) {
+        cartCountElement.classList.add('active');
+      } else {
+        cartCountElement.classList.remove('active');
+      }
+      
+      localStorage.setItem('smartFoodsCart', JSON.stringify(cart));
+      localStorage.setItem('smartFoodsCartCount', Object.keys(cart).length.toString());
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2000);
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+      const savedCart = localStorage.getItem('smartFoodsCart');
+      const savedCount = localStorage.getItem('smartFoodsCartCount');
+      
+      if (savedCart) {
+        cart = JSON.parse(savedCart);
+        cartItemCount = parseInt(savedCount) || 0;
+        
+        Object.keys(cart).forEach(itemName => {
+          const productCards = document.querySelectorAll('.product-card');
+          productCards.forEach(card => {
+            const productName = card.querySelector('.product-name').textContent;
+            if (productName === itemName) {
+              const addButton = card.querySelector('.add-to-cart');
+              const quantityControls = card.querySelector('.quantity-controls');
+              const quantityDisplay = card.querySelector('.quantity-display');
+              
+              addButton.style.display = 'none';
+              quantityControls.classList.add('active');
+              quantityDisplay.textContent = cart[itemName].quantity;
+            }
+          });
+        });
+        
+        updateCartDisplay();
+      }
+    });
+  </script>
+</body>
+</html>

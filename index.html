@@ -43,6 +43,7 @@
       color: var(--soft-white);
       overflow-x: hidden;
       position: relative;
+      padding-top: 90px;
     }
 
     /*floating particles */
@@ -75,10 +76,13 @@
       backdrop-filter: blur(30px) saturate(180%);
       border-bottom: 1px solid var(--glass-border);
       padding: 0;
-      position: sticky;
+      position: fixed;
       top: 0;
+      left: 0;
+      right: 0;
       z-index: 1000;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .header-content {
@@ -87,11 +91,13 @@
       align-items: center;
       padding: 30px 25px 25px;
       position: relative;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .logo-container {
       position: relative;
       margin-bottom: 8px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .logo {
@@ -113,6 +119,7 @@
       background-clip: text;
       animation: luxuryShimmer 4s ease-in-out infinite;
       text-shadow: 0 0 30px rgba(201, 169, 97, 0.3);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     @keyframes luxuryShimmer {
@@ -130,6 +137,7 @@
       height: 1px;
       background: linear-gradient(90deg, transparent, var(--primary-gold), transparent);
       opacity: 0.6;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .tagline {
@@ -139,11 +147,45 @@
       letter-spacing: 3px;
       text-transform: uppercase;
       margin-top: 5px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 1;
+    }
+
+    /* Scrolled state styles */
+    header.scrolled {
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(40px) saturate(200%);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    header.scrolled .header-content {
+      padding: 15px 25px 12px;
+    }
+
+    header.scrolled .logo-container {
+      margin-bottom: 0;
+    }
+
+    header.scrolled .logo {
+      font-size: 1.8rem;
+      letter-spacing: 3px;
+    }
+
+    header.scrolled .logo::after {
+      width: 40%;
+      bottom: -4px;
+    }
+
+    header.scrolled .tagline {
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      margin-top: 2px;
+      opacity: 0.8;
     }
 
     .hero-section {
       text-align: center;
-      padding: 70px 25px 50px;
+      padding: 140px 25px 50px; /* Added top padding to account for fixed header */
       position: relative;
     }
 
@@ -441,8 +483,17 @@
         letter-spacing: 4px;
       }
       
+      header.scrolled .logo {
+        font-size: 1.6rem;
+        letter-spacing: 2px;
+      }
+      
       .header-content {
         padding: 25px 20px 20px;
+      }
+      
+      header.scrolled .header-content {
+        padding: 12px 20px 10px;
       }
       
       .hero-title { 
@@ -451,7 +502,7 @@
       }
       
       .hero-section {
-        padding: 50px 20px 40px;
+        padding: 120px 20px 40px;
       }
       
       .categories-grid {
@@ -504,12 +555,17 @@
         letter-spacing: 3px;
       }
       
+      header.scrolled .logo {
+        font-size: 1.4rem;
+        letter-spacing: 2px;
+      }
+      
       .hero-title { 
         font-size: 2.8rem; 
       }
       
       .hero-section { 
-        padding: 40px 15px 30px; 
+        padding: 110px 15px 30px; 
       }
       
       .categories-grid { 
@@ -544,8 +600,17 @@
         letter-spacing: 2px;
       }
       
+      header.scrolled .logo {
+        font-size: 1.3rem;
+        letter-spacing: 1px;
+      }
+      
       .hero-title { 
         font-size: 2.5rem; 
+      }
+      
+      .hero-section {
+        padding: 100px 15px 30px;
       }
       
       .category-card {
@@ -574,7 +639,7 @@
   </style>
 </head>
 <body>
-  <header>
+  <header id="header">
     <div class="header-content">
       <div class="logo-container">
         <div class="logo">Smart Foods</div>
@@ -597,34 +662,34 @@
       <p class="category-description">Hand-roasted coffee, premium teas & signature cocktails</p>
     </a>
 
-    <a href="gourmet-bites.html" class="category-card">
+    <a href="appetizers.html" class="category-card">
       <span class="category-icon">🥂</span>
       <h3 class="category-title">Gourmet Appetizers</h3>
       <p class="category-description">Elevated small plates & sophisticated appetizers</p>
     </a>
 
-    <a href="artisan-pastries.html" class="category-card">
+    <a href="bakery.html" class="category-card">
       <span class="premium-badge">Fresh</span>
       <span class="category-icon">🥐</span>
       <h3 class="category-title">Bakery Delights</h3>
       <p class="category-description">Fresh-baked croissants, macarons & delicate confections</p>
     </a>
 
-    <a href="signature-mains.html" class="category-card">
+    <a href="mains.html" class="category-card">
       <span class="premium-badge">Signature</span>
       <span class="category-icon">🍽️</span>
       <h3 class="category-title">Signature Mains</h3>
       <p class="category-description">Thoughtfully crafted entrées with seasonal ingredients</p>
     </a>
 
-    <a href="decadent-desserts.html" class="category-card">
+    <a href="desserts.html" class="category-card">
       <span class="premium-badge">Exquisite</span>
       <span class="category-icon">🍰</span>
       <h3 class="category-title">Luxury Desserts</h3>
       <p class="category-description">Luxurious sweets & artisanal chocolate creations</p>
     </a>
 
-    <a href="seasonal-specials.html" class="category-card">
+    <a href="Seasonal.html" class="category-card">
       <span class="category-icon">✨</span>
       <h3 class="category-title">Seasonal Specials</h3>
       <p class="category-description">Limited-time offerings featuring finest seasonal produce</p>
@@ -711,5 +776,39 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    // Smooth scroll header animation
+    let lastScrollTop = 0;
+    const header = document.getElementById('header');
+    const scrollThreshold = 50; // Pixels from top before header shrinks
+
+    function handleScroll() {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      
+      if (scrollTop > scrollThreshold) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+      
+      lastScrollTop = scrollTop;
+    }
+
+    // Throttle scroll events for better performance
+    let ticking = false;
+    function requestTick() {
+      if (!ticking) {
+        requestAnimationFrame(handleScroll);
+        ticking = true;
+        setTimeout(() => { ticking = false; }, 10);
+      }
+    }
+
+    window.addEventListener('scroll', requestTick);
+    
+    // Handle initial load
+    window.addEventListener('load', handleScroll);
+  </script>
 </body>
 </html>
